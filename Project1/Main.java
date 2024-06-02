@@ -1,6 +1,3 @@
-// Name: Ashley Nguyen
-// NetID: atn210009
-
 import java.io.*;
 import java.util.*;
 import java.lang.Math;
