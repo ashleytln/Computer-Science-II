@@ -1,9 +1,11 @@
+// Name: Ashley Nguyen
+// NetID: atn210009
+
 import java.io.*;
 import java.util.*;
 import java.lang.Math;
 
 public class Main {
-    // Check availability of auditorium based on user input
     public static boolean checkAvailability(Auditorium aud, int r, int seat, int total) {
         Node nextptr = aud.getFirst(), downptr = aud.getFirst();
         int i;
@@ -17,14 +19,16 @@ public class Main {
         }
         // Check if enough seats available for user to reserve
         for (i = 0; i < total; i++) {
-            if (Character.compare(nextptr.getPayload().getTixType(), '.') != 0 || nextptr.getNext() == null)
+            // If seat is not empty and no adjacent seat available for user's selection, desired selection unavailable
+            if (Character.compare(nextptr.getPayload().getTixType(), '.') != 0 && nextptr.getNext() == null)
                 return false;
+            // If current seat empty and seats available for user's selection, traverse to next seat
             if (nextptr.getNext() != null)
                 nextptr = nextptr.getNext();
         }
         return true;
     }
-    // Check for a best available selection of seats (closest to center of auditorium) based on user's total number of tickets
+   
     public static Seat findBestAvailable(Auditorium aud, int r, int c, int total) {
         Node nextptr = aud.getFirst(), downptr = nextptr.getDown(), startingptr = nextptr;
         double middleRow = (r + 1) / 2.0, middleSeat = (c + 1) / 2.0, dist = 0, smallestDist = Math.sqrt(Math.pow(10, 2) + Math.pow(26, 2));
@@ -177,7 +181,7 @@ public class Main {
             System.out.println("1. Reserve Seats");
             System.out.println("2. Exit");
          
-            // Validate menu choice input
+            // User input validation
             do {
                 try {
                     System.out.print("Enter menu choice: ");
@@ -194,10 +198,10 @@ public class Main {
                     continue;
                 }
             } while (true);
-            // If user chooses to reserve seats
+         
             if (userChoice == 1) {
                 System.out.println(a);
-                // Validate row choice
+                // User input validation
                 do {
                     try {
                         System.out.print("Enter row choice: ");
@@ -214,7 +218,7 @@ public class Main {
                         continue;
                     }
                 } while (true);
-                // Validate seat choice
+            
                 do {
                     try {
                         System.out.print("Enter starting seat letter: ");
@@ -233,7 +237,7 @@ public class Main {
                         continue;
                     }
                 } while (true);
-                // Validate number of adult tickets
+            
                 do {
                     try {
                         System.out.print("Number of adult tickets: ");
@@ -250,7 +254,7 @@ public class Main {
                         continue;
                     }
                 } while (true);
-                // Validate number of child tickets
+            
                 do {
                     try {
                         System.out.print("Number of child tickets: ");
@@ -267,7 +271,7 @@ public class Main {
                         continue;
                     }
                 } while (true);
-                // Validate number of senior tickets
+            
                 do {
                     try {
                         System.out.print("Number of senior tickets: ");
@@ -284,27 +288,23 @@ public class Main {
                         continue;
                     }
                 } while (true);
-                // Call checkAvailability using user input, call reserveSeats if seat selection available
+            
                 if (checkAvailability(a, rowChoice - 1, (int)(seatLetter) - 65, aTix + cTix + sTix))
                     reserveSeats(a, rowChoice - 1, (int)(seatLetter) - 65, aTix, cTix, sTix);
-                // If seats not available, find best available selection
                 else {
-                    // Store starting seat of best available selection if exists
                     Seat bestAvail = findBestAvailable(a, a.getNumRow(), a.getNumCol(), aTix + cTix + sTix);
-                    // If selection does not exist
                     if (Character.compare(bestAvail.getSeat(), '\0') == 0)
                         System.out.println("no seats available");
-                    // Display best available selection
                     else {
                         System.out.printf("Best available:\n%d%c", bestAvail.getRow(), bestAvail.getSeat());
                         // Displays range to console if reserving more than 1 seat
                         if ((aTix + cTix + sTix) > 1)
-                            System.out.printf(" - %d%c\n", bestAvail.getRow(), (char)(bestAvail.getSeat() + aTix + cTix + sTix - 1));
+                            System.out.printf(" - %d%c", bestAvail.getRow(), (char)(bestAvail.getSeat() + aTix + cTix + sTix - 1));
                         // Only reserves seats if user indicates yes
                         char reserveYN;
                         do {
                             try {
-                                System.out.print("Reserve seats? (Y/N): ");
+                                System.out.print("\nReserve seats? (Y/N): ");
                                 reserveYN = input.next().charAt(0);
                                 reserveYN = Character.toUpperCase(reserveYN);
                                 while (Character.compare(reserveYN, 'Y') != 0 && Character.compare(reserveYN, 'N') != 0) {
@@ -320,13 +320,12 @@ public class Main {
                                 continue;
                             }
                         } while (true);
-                        // Reserve seats if user indicates to reserve best available
+                     
                         if (Character.compare(Character.toUpperCase(reserveYN), 'Y') == 0)
                             reserveSeats(a, bestAvail.getRow() - 1, (int)(bestAvail.getSeat()) - 65, aTix, cTix, sTix);
                     }
                 }
             }
-            // If user chooses 2 to exit program (input validated to be 1 or 2), display report and exit
             else
                 displayReport(a, a.getNumRow(), a.getNumCol());
             
